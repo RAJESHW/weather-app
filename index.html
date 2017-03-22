@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h2>Weather Search</h2>
+		<form>
+			<input id="cityName" type="text" name="city" />
+			<button type="submit">Check Weather</button>
+			<button type="button" onClick="getLocation();">Get Location</button>
+			<p id="demo"></p>
+		</form>
+		<script>
+		var form = document.querySelector('form');
+		var cityTxt = document.querySelector('#cityName');
+		var getLocationButton = document.querySelector('#getLocation');
+		const queryURL = 'http://api.openweathermap.org/data/2.5/weather?q=';
+		const APPID = 'a18eb7b553d10e9bd69d21860e62b776';
+		var latitude,longitude;
+		var fetchData = function (e) {
+			e.preventDefault();
+			var cityName = cityTxt.value;
+			var queryValue = `${queryURL}${cityName}&APPID=${APPID}`;
+
+			fetch(queryValue)
+				.then(function(response) {
+					return response.json();
+				})
+				.then(function(json) {
+					console.log(json);
+					console.log(json.weather[0].main);
+					document.getElementById("demo").innerHTML = json.weather[0].main;
+				});
+		}
+ 		
+		function getLocation() {
+			navigator.geolocation.getCurrentPosition(function(location) {
+			console.log(location.coords.latitude);
+			var latitude = location.coords.latitude;
+			var longitude = location.coords.longitude;
+			console.log(latitude,longitude);
+			fetchData(window.event);
+			})
+		}
+		form.addEventListener('submit', fetchData, false);
+		
+		</script>
+	</body>
+</html>
